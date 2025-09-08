@@ -35,7 +35,7 @@ DEBUG = True
 
 
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", 'khalisha-roselani-supercopa.pbp.cs.ui.ac.id']
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "khalisha-roselani-supercopa.pbp.cs.ui.ac.id"]
 
 
 
