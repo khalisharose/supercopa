@@ -28,12 +28,14 @@ Soal
         25. Ubah template yang tadi di main.html
         26. Buat berkas urls.py didalam folder main, isi sama konfigurasi routing buat aplikasi main nya.
         27. Import fungsi include dari Django di urls.py yang di "supercopa" bukan yang tadi di main, tambahin path juga di urlpatterns
-        28. Terakhir push ke repositori GitHub dan PWS (pake git add, commit, push origin master, sama push pws master)
+        28. Terakhir push ke repositori GitHub dan PWS (pake git add, commit, push origin master, sama push pws master
 
 
     2. Buatlah bagan yang berisi request client ke web aplikasi berbasis Django beserta responnya dan jelaskan pada bagan tersebut kaitan antara urls.py, views.py, models.py, dan berkas html.
+    !<img width="1682" height="1097" alt="Screenshot 2025-09-10 101411" src="https://github.com/user-attachments/assets/ba61b944-67d1-4c69-b3d2-e583029181ed" />
+    
 
-    3. Jelaskan peran settings.py dalam proyek Django!
+    3. Jelaskan peran settings.py dalam proyek Django
 
         settings.py merupakan file konfigurasi utama Django yang mengatur path proyek, keamanan (seperti SECRET_KEY dan DEBUG), aplikasi (INSTALLED_APPS), middleware, database (SQLite untuk development, PostgreSQL untuk production), template, validasi, internasionalisasi, dan file statis (STATIC_URL).
 
