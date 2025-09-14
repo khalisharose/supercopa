@@ -1,4 +1,4 @@
-Soal
+Soal Tugas 2
 1. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
     1. Membuat direktori baru sesuai nama toko saya nantinya "supercopa"
     2. Mengaktifkan virtual environment dengan python -m venv env dan env\Scripts\activate
@@ -44,3 +44,46 @@ Soal
 
 6. Apakah ada feedback untuk asisten dosen tutorial 1 yang telah kamu kerjakan sebelumnya?
     Engga adaa, ka fahri baik banget dan helpfull sekali, rating bintang 5 
+
+
+Soal Tugas 3
+1. Jelaskan mengapa kita memerlukan data delivery dalam pengimplementasian sebuah platform?
+    Data delivery sendiri kan pada dasarnya adalah proses pertukaran data dan pengiriman informasi antar komponen di dalam platform, jadi kenapa data delivery diperlukan dalam pengimplementasian sebuah platform adalah karena;
+    1. Menjadi jembatan komunikasi antar sistem
+        Platform di zaman sekarang kan semuanya udah modern, nah platform ini biasanya terdiri dari berbagai komponen contohnya ada frontend, backend, database, dan API. Komponen-komponen tersebut perlu bertukar data supaya bisa berfungsi dengan baik. Data juga perlu dikiriim bolak-balik dari client dan server sehingga data delivery memiliki peran yang penting.
+    2. Skalabilitas dan efisiensi
+        Karena menggunakan mekanisme seperti API atau HTTP, data delivery bantu mastiin supaya datanya dikirim dengan cepat, jadi bisa mendukung performa dari platform tsb.
+    3. Memudahkan dalam berintegrasi dengan sistem eksternal 
+        Sering kita temuin kalo platform terhubung sama layanan pihak ketiga, nah tanpa data delivery platform gabisa berfungsi secara aktif dan memberikan pengalaman kepada pengguna secara optimal.
+    4. Fungsionalitas aplikasi
+        Data delivery itu membuat aplikasi bisa mengambil, memproses, dan juga menampilkan informasi kepada penggunanya
+
+2. Menurutmu, mana yang lebih baik antara XML dan JSON? Mengapa JSON lebih populer dibandingkan XML?
+    Menurut aku JSON lebih baik. Dilihat dari segi sintaks nya yang lebih ringkas dan mudah dibaca, ukuran data nya juga lebih kecil, dan juga udah support Native JavaScript jadi bisa di parse tanpa library tambahan. Kalo kenapa JSON lebih populer dari XML salah satunya karena lebih cepat dan juga efisien daripada XML.
+
+3. Jelaskan fungsi dari method is_valid() pada form Django dan mengapa kita membutuhkan method tersebut?
+    Method is_valid di form Django dipakai untuk memvalidasi data yang dikirimin sama form dan mastiin kalau data itu udah sesuai aturan validasi yang udh di define di kelas form nya, intinya buat masttin akklau data yang masuk itu sesuai format. method ini juga bisa mencegah pemrosesan data yang berbahaya kalo inputnya bahaya, bisa juga buat ngasih kita error massage yang jelas jadi lebih mudah tau salah nya kita dimana.
+
+4. Mengapa kita membutuhkan csrf_token saat membuat form di Django? Apa yang dapat terjadi jika kita tidak menambahkan csrf_token pada form Django? Bagaimana hal tersebut dapat dimanfaatkan oleh penyerang?
+    Kita butuh csrf_token saat membuat form di Django supaya terhindar dari serangan CSRF. Jadi token ini bakal berbentuk string unik yang dihasilin sama si server terus di letakkan di dalam form HTMLnya jadi pas formnya dikirim servernya bakal memverifikasi tokennya, sama atau engga sama yang udh di hasilin tadi, intinya mastiin kalau requestnya dari sumber yang benar.
+
+    Kalau kita tidak menambahkan csrf_token si Django nya bakal nolak request POST dari form tsb. Dia bakal ngembaliin error 403 atau Forbidden, karena udah defaultnya kalo si Django butuh CSSRF ttoken buat semua request (POST, PUT, maupun DELETE). Terus kalo gapake si csrf token aplikasinya jadi rentan terkena serangan csrf. 
+
+5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
+    1. Pertama aku buat folder baru yang namanya template di rrot folder aku yang supercopa, terus buat file baru namanya base.html yang berisi code yang nantinya buat jadi template dasar atau skeleton buat halaman web lainnya. 
+    2. Tambahin [BASE_DIR / 'template'] di settings.py bagian Templates, ini supaya si base.html tadi ter-detect sebagai file template
+    3. Ubah isi main.html yang udah ada di tutoriala sebelumnya dengan code yang baru. Di code baru ini kita gunain si base.html sebagai template utama
+    4. Buat formm input data yang dinamain forms.py di dalam folder main, forms.py ini yang nantinya bakal nerima data product baru
+    5. Memperbaharui views.py. Disini aku ada nambahin dan ngerubah fungsi yang ada. Contohnya aku nambahin create_product buat nambahin data product otomatis kalau datanya udh di dubmit di form
+    6. Terus aku import fungsi" yang udh aku buat tadi ke urls.py dan nambahin pathnya ke urlpatterns nya.
+    7. Lalu balik ke main.html lagi buat nge-update code yang ada di blok content buat nampilin data product sama tombol Add product 
+    8. Lalu buat file baru yang namanya create_product.html sama product_detail.html.  Isi create_product tadi itu buat ngebuat csrf token yang berfusngsi sebagai pelindung dari serangan yang berbahaya. Di dalem create_product juga ada template tag.
+    9. Aku nambahin entri url aku di CSRF_TRUSTED_ORIGINS di settings.py, kalo udah aku coba runserver dan buka localhost udah muncul atau belum, mastiin aja
+    10. import HttpResponse dan Serializer di views.py
+    11. Buat fungsi show_xml di views.py, terus import fungsi itu ke urls.py dan tambahin path url nya di urlpatterns. kalo udah cek lagi dengan jalanin runserver lagi terus buka localhost yg xml
+    12. Buat fungsi juga buat yang json terus aku ngelakuin hal yang sama kayak yang di no.11
+    13. Buat fungsi show xml dan show json versi yang by id, tambahin try except juga, import fungsi nya di urls.py, terus tambahin path nya juga di urlpatterns, kalo udah run server lg buat cek dan buka localhost nya, yang kali ini masukin si product id nya
+    14. Lalu buat request baru di postman pake GET terus masukin semua link localhost yang udh dibuka tadi, terus ss
+    15.  Terakhir push ke repositori GitHub dan PWS (pake git add, commit, push origin master, sama push pws master)
+6. Apakah ada feedback untuk asdos di tutorial 2 yang sudah kalian kerjakan?
+    Tidak ada, asdos saya baik dan informatif sekali

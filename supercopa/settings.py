@@ -37,7 +37,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "khalisha-roselani-supercopa.pbp.cs.ui.ac.id"]
 
-
+...
+CSRF_TRUSTED_ORIGINS = [
+    "https://khalisha-roselani-supercopa.pbp.cs.ui.ac.id"
+]
+...
 
 
 
@@ -68,7 +72,7 @@ ROOT_URLCONF = 'supercopa.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'], # Penambahan code disini
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
