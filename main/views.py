@@ -29,9 +29,9 @@ def create_Product(request):
 def show_Product(request, id):
     product = get_object_or_404(Product, pk=id)
     Product.increment_stock(product)
-
+    print(product)
     context = {
-        'Product': product
+        'product': product
     }
 
     return render(request, "product_detail.html", context)
