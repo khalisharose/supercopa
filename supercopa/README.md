@@ -87,3 +87,9 @@ Soal Tugas 3
     15.  Terakhir push ke repositori GitHub dan PWS (pake git add, commit, push origin master, sama push pws master)
 6. Apakah ada feedback untuk asdos di tutorial 2 yang sudah kalian kerjakan?
     Tidak ada, asdos saya baik dan informatif sekali
+   <img width="2508" height="1591" alt="Screenshot 2025-09-13 232410" src="https://github.com/user-attachments/assets/a68c3463-cca6-4e58-94b1-bb1ca5f019d7" />
+   <img width="2562" height="1599" alt="Screenshot 2025-09-13 232432" src="https://github.com/user-attachments/assets/348c8f3d-fd5b-4348-b75e-d954de4b7c82" />
+<img width="2553" height="1590" alt="Screenshot 2025-09-13 232523" src="https://github.com/user-attachments/assets/24efe8c9-2878-4cba-bba9-3053dc3a4a72" />
+<img width="2544" height="1592" alt="Screenshot 2025-09-13 232543" src="https://github.com/user-attachments/assets/b274b7ea-c989-4f0a-bd69-1ed864973ccd" />
+
+   
