@@ -70,7 +70,7 @@ Soal Tugas 3
     Kalau kita tidak menambahkan csrf_token si Django nya bakal nolak request POST dari form tsb. Dia bakal ngembaliin error 403 atau Forbidden, karena udah defaultnya kalo si Django butuh CSSRF ttoken buat semua request (POST, PUT, maupun DELETE). Terus kalo gapake si csrf token aplikasinya jadi rentan terkena serangan csrf. 
 
 5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
-    1. Pertama aku buat folder baru yang namanya template di rrot folder aku yang supercopa, terus buat file baru namanya base.html yang berisi code yang nantinya buat jadi template dasar atau skeleton buat halaman web lainnya. 
+    1. Pertama aku buat folder baru yang namanya template di root folder aku yang supercopa, terus buat file baru namanya base.html yang berisi code yang nantinya buat jadi template dasar atau skeleton buat halaman web lainnya. 
     2. Tambahin [BASE_DIR / 'template'] di settings.py bagian Templates, ini supaya si base.html tadi ter-detect sebagai file template
     3. Ubah isi main.html yang udah ada di tutoriala sebelumnya dengan code yang baru. Di code baru ini kita gunain si base.html sebagai template utama
     4. Buat formm input data yang dinamain forms.py di dalam folder main, forms.py ini yang nantinya bakal nerima data product baru
