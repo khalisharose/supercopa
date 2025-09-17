@@ -1,5 +1,6 @@
 import uuid
 from django.db import models
+from django.contrib.auth.models import User
 
 class Product(models.Model):
     CATEGORY_CHOICES = [
@@ -27,6 +28,8 @@ class Product(models.Model):
     is_official_merch = models.BooleanField(default=False) # Official merch
     size = models.CharField(max_length=2, choices=SIZE_CHOICES, default='M') # Size
     is_signed = models.BooleanField(default=False)  # Jersey yang ada tanda tangannya
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True) # tambahkan ini
+    
 
     def __str__(self):
         return self.name
@@ -39,3 +42,4 @@ class Product(models.Model):
     def increment_stock(self):
         self.stock += 1
         self.save() # Buat nambahin nilai stok sebanyak 1 dan menyimpan perubahan nya ke database
+        
