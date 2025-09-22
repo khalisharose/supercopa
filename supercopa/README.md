@@ -87,9 +87,91 @@ Soal Tugas 3
     15.  Terakhir push ke repositori GitHub dan PWS (pake git add, commit, push origin master, sama push pws master)
 6. Apakah ada feedback untuk asdos di tutorial 2 yang sudah kalian kerjakan?
     Tidak ada, asdos saya baik dan informatif sekali
+<<<<<<< HEAD
    <img width="2508" height="1591" alt="Screenshot 2025-09-13 232410" src="https://github.com/user-attachments/assets/a68c3463-cca6-4e58-94b1-bb1ca5f019d7" />
    <img width="2562" height="1599" alt="Screenshot 2025-09-13 232432" src="https://github.com/user-attachments/assets/348c8f3d-fd5b-4348-b75e-d954de4b7c82" />
 <img width="2553" height="1590" alt="Screenshot 2025-09-13 232523" src="https://github.com/user-attachments/assets/24efe8c9-2878-4cba-bba9-3053dc3a4a72" />
 <img width="2544" height="1592" alt="Screenshot 2025-09-13 232543" src="https://github.com/user-attachments/assets/b274b7ea-c989-4f0a-bd69-1ed864973ccd" />
 
    
+=======
+
+Soal Tugas 4
+ 1. Apa itu Django AuthenticationForm? Jelaskan juga kelebihan dan kekurangannya.
+    AuthenticationForm adalah form bawaan dari django yang dipakai untuk proses login. Dia tugasnya untuk memvalidasi username dan password terhadap sistem autentikasi django. Form ini merupakan bagian dari django.contrib.auth.forms dan dirancang khusus untuk memvalidasi kredensial pengguna (username/email dan password).
+
+    Kelebihan : 
+    1. Cepat dipakai karena udah tersedia (plug dan play)
+    2. Terintegrasi langsung dengan sistem auth Django
+    3. Otomatis memvalidasi kredensial dengan database
+    3. Dia udah ngikutin praktik standar keamanan django (hashing, valiidasi)
+    4. Bisa di perluas atau di custom sesuai kebutuhan kita
+
+    Kekurangan :
+    1. Dia terbatas pada autentikasi username/password standar
+    2. Tampilan default nya sederhana jadi perlu customization tambahan untuk UI yang menarik
+    3. Dia ga punya fitur seperti "remember me" atau "forgot password" secara default
+    4. Dia bergantung pada model User Django
+
+ 2. Apa perbedaan antara autentikasi dan otorisasi? Bagaiamana Django mengimplementasikan kedua konsep tersebut?
+    Autentikasi adalah proses memverifikasi identitas pengguna jadi dia pada dasarnya ngeejawab pertanyaan "Siapa kamu?". Dia ngelakuin pengecekan kredensial kayak username, password, atau token buat mastiin pengguna nya benar-benar orang yang mereka klaim. Sedangkan, otorisasi adalah proses buat nentuin apa yang boleh dilakuin oleh pengguna yang udah terautentikasi kayak buat menjawab pertanyaan "Apa yang boleh kamu lakukan?". Ini melibatkan pengecekan permission, role, atau hak akses terhadap resource tertentu.
+    
+    nah django mengimplementasikan autentikasi melalui sistem user model, session management, dan berbagai authentication backend. Sistem ini buat menangani login, logout, dan jadi tempat penyimpanan informasi user yang sudah login dalam session. Buat otorisasi, django memakai sistem permission dan group yang fleksibel. Setiap model secara otomatis mendapat permission add, change, delete, dan view. Django juga menyediakan decorator dan mixin untuk melindungi view berdasarkan login status atau permission tertentu.
+
+ 3. Apa saja kelebihan dan kekurangan session dan cookies dalam konteks menyimpan state di aplikasi web?
+    Session
+    Kelebihan:
+    1. Data yang ada disimpannya di server jadi lebih aman dari manipulasi client
+    2. Dia bisa menyimpan data dalam jumlah besar tanpa batasan seperti cookies
+    3. Dia mendukung tipe data kompleks ga hanya string
+    4. Dia juga otomatis dibersihkan saat expired jadi bisa mengurangi risiko keamanan
+
+    Kekurangan:
+    1. Dia pake resource server (memory/database) yang bisa jadi bottleneck
+    2. Susah buat di-scale pada arsitektur multi-server tanpa shared storage
+    3. masih bergantung pada cookies buat menyimpan session ID
+    4. sedikit lebih lambat karena dia perlu akses ke storage backend
+
+    Cookies
+    Kelebihan:
+    1. Karena di simpen di client dia jadi ga membebani server 
+    2. Akses nya sangat cepat karena langsung tersedia di browser
+    3. Dapat bertahan lama meski browser ditutup (persistent cookies)
+    4. Cocok buat aplikasi stateless dan microservices architecture
+
+    Kekurangan:
+    1. Ukuran terbatas (4KB per cookie)
+    2. Rentan terhadap manipulasi dan pencurian di client-side
+    3. Menimbulkan privacy concerns karena bisa digunain buat tracking
+    4. Dapat dinonaktifkan oleh pengguna jadi bisa mengganggu fungsionalitas aplikasi
+
+ 4. Apakah penggunaan cookies aman secara default dalam pengembangan web, atau apakah ada risiko potensial yang harus diwaspadai? Bagaimana Django menangani hal tersebut?
+    Cookies ga aman secara default karena beberapa faktor:
+
+    1. Cookies dikirim dalam plain text kecuali pake HTTPS
+    2. Bisa dimodifikasi sama pengguna atau malware di sisi client
+    3. Rentan terhadap session hijacking kalau dicuri
+    4. Dapat dieksploitasi lewat Cross-Site Scripting (XSS) attacks
+    5. Berisiko terhadap Cross-Site Request Forgery (CSRF) attacks
+
+    Cara Django Menangani:
+    Django nyediain berbagai konfigurasi keamanan buat cookies kayak setting SECURE flag yang mastiin cookies cuma dikirim melalui HTTPS, HTTPONLY flag yang mencegah akses melalui JavaScript, dan SAMESITE attribute buat ngelindungin diri dari CSRF attacks. Django juga mengenkripsi dan menandatangani cookies buat mencegah tampering, serta nyediain built-in CSRF protection middleware.
+
+ 5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
+    1. Aktifin env dulu kaya biasa, tambahin import UserCreationForm dan import messages di views.py
+    2. Tambahin fungsi Registrasi ke viws juga tujuannya buat ngehasilin form regisstrasi secara otomatis dan ngehasilin akun pengguna ketika datanya di submit di form
+    3. Buat html baru yang namanya register.html 
+    4. Import fungsi register yang tadi dan tambahin path url ke urlpattern
+    5. Tambahin import" lain yang dibutuhin buat fungsi login di views kayak import authenticate, login, dan authenticatationForm, tambahin juga fungsi login user 
+    6. Buat html baru yang namanya login.html 
+    7. Import fungsi tsb di urls.py dan tambahin path url nya ke urlpattern
+    8. Tambahin import logout di views, trs sama fungsi logout_user disitu, buat button logout juga di main.html
+    9. Import logout_user yang tadi ke urls.py trs juga tambahin path url nya ke urlpattern 
+    10. Tambahin import login_required di views terus tambahin potongan code @login_required buat implementasiin decorator yang baru di import
+    11. Tambahin import HttpResponseRedirect, reverse, dan datetime, terus ubah code bagian login_user buat nyimpen cookie baru yang namanya last_login yang isinya timestamp terakhir kali pengguna ngelakuin login. Di show main tambahin code ke dalem variabel context, sama ubah fungsi logout-user buat ngehapus cookie last_login setelah logout
+    12. Buat ngegabungin model product sama usernya pertama import user di models.py sama tambahin code user di class product nya
+    13. terus di makemigration dan migrate, abis itu buah fungsi create_product dan modifikasi show main
+    14. Tambahin tombol filter My dan All di main.html dan tambahin nama author di product detail
+    15. di run server trs buka di local host (coba) kalau udh bisa terakhir push ke repositori GitHub dan PWS (pake git add, commit, push origin master, sama push pws master)
+    
+>>>>>>> 3cd3225 (Tugas 4)

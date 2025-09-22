@@ -30,6 +30,7 @@ class Product(models.Model):
     is_signed = models.BooleanField(default=False)  # Jersey yang ada tanda tangannya
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True) # tambahkan ini
     
+    
 
     def __str__(self):
         return self.name
