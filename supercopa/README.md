@@ -175,3 +175,62 @@ Soal Tugas 4
     15. di run server trs buka di local host (coba) kalau udh bisa terakhir push ke repositori GitHub dan PWS (pake git add, commit, push origin master, sama push pws master)
     
 >>>>>>> 3cd3225 (Tugas 4)
+Soal Tugas 5
+
+1. Jika terdapat beberapa CSS selector untuk suatu elemen HTML, jelaskan urutan prioritas pengambilan CSS selector tersebut!
+    Prioritas ditentukan oleh tiga hal utama:
+    1. !important, aturan dengan tanda ini bakal lebih menang daripada aturan biasa.
+    2. Spesifisitas selector, inline style lebih tinggi daripada ID, ID lebih tinggi dari class/attribute/pseudo-class, class lebih tinggi dari selector elemen/tag.
+    3. Urutan penulisan, jika spesifisitas sama, aturan yang ditulis terakhir di CSS yang diterapkan.
+    jadi, urutan prioritasnya adalah:
+    !important → inline style → ID → class/attribute/pseudo-class → selector elemen → default browser.
+
+2. Mengapa responsive design menjadi konsep yang penting dalam pengembangan aplikasi web? Berikan contoh aplikasi yang sudah dan belum menerapkan responsive design, serta jelaskan mengapa!
+    Responsive design penting karena:
+    1. Dia membuat website nyaman diakses dari berbagai ukuran layar (ponsel, tablet, laptop, dsb.).
+    2. Meningkatkan pengalaman pengguna dan membuat pengunjung betah.
+    3. Diutamakan oleh mesin pencari (SEO) dan meningkatkan aksesibilitas.
+    contoh aplikasi yang udah responsive: media sosial populer atau e-commerce modern yang layout-nya udah menyesuaikan lebar layar.
+    contoh yang belum responsive: beberapa website lama atau situs pemerintah lama yang tampilannya terpotong di handphone jadi susah digunain.
+
+3. Jelaskan perbedaan antara margin, border, dan padding, serta cara untuk mengimplementasikan ketiga hal tersebut!
+    1. Margin adalah ruang kosong di luar border untuk mengatur jarak antar-elemen.
+    2. Kalau border dia bingkai yang mengelilingi elemen dan keliatan (punya warna & ketebalan).
+    3. Yang terakhir kalau padding dia itu ruang kosong di dalam border yang guna nya buat ngasih jarak antara isi elemen dengan border.
+    Cara implementasi nya :
+    1. Margin dipake kalo mau menjauhkan elemen dari elemen lain di sekitarnya.
+    Contohnya ada dua kotak yang terlalu nempel itu bisa ditambahin margin supaya mereka punya jarak luar.
+    2. Border dipake kalau mau ngasih bingkai yang keliatan di sekeliling elemen.
+    Border ini juga bisa diatur ketebalan, warna, dan gaya garisnya (misalnya garis solid, putus-putus, atau titik-titik).
+    3. Padding dipake saat mau ngasih ruang di dalam elemen, supaya isi elemen (misalnya teks atau gambar) ga terlalu mepet ke bingkai border.
+    
+4. Jelaskan konsep flex box dan grid layout beserta kegunaannya!
+    Flexbod dan Grid Layout sendiri kegunaanya adalah buat mengatur tata letak elemen di halaman web. 
+
+    Flexbox (Flexible Box):
+    Dia dipakai untuk menyusun elemen dalam satu baris atau satu kolom saja.
+    Elemen-elemen di dalamnya bisa otomatis nyesuain lebar atau tinggi agar pas sama ruang yang ada.
+    Cocok buat susunan yang sederhana: contohnya kayak deretan menu di navbar, barisan tombol, atau buat masukin teks dan gambar supaya selalu ada di tengah kotak.
+
+    Grid Layout:
+    Dia digunain buat nyusun elemen dalam bentuk baris dan kolom sekaligus (dua dimensi).
+    Bisa nentuin ukuran tiap baris dan tiap kolom, kayak buat tabel atau papan catur.
+    Cocok buat layout yang lebih kompleks, misalnya buat membagi halaman jadi area header di atas, sidebar di kiri, konten di tengah, footer di bawah.
+
+    Perbedaan utamanya:
+    Kalo flexbox → fokus satu arah (horizontal atau vertikal). Sedangkan grid → bisa mengatur dua arah sekaligus (horizontal dan vertikal).
+
+    Kegunaan:
+    Tergantung kebutuhan, kalo mau menata deretan elemen yang sejajar atau menempatkan isi di tengah pake nya Flexbox.Tapi kalo mau buat struktur halaman yang punya baris dan kolom pake Grid Layout.
+5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial)!
+    1. Buat fungsi edit_product dan delete_product di views.py
+    2. Tambahkan routing di urls.py dengan path yang sesuai
+    3. Buat template edit_product.html untuk halaman edit
+    4. Tambahkan tombol Edit dan Delete di card_product.html
+    5. Tambahkan CDN Tailwind di base.html
+    6. Buat file global.css di folder static/css untuk custom styling
+    7. Link global.css ke base.html
+    8. Styling semua halaman (login, register, main, create, edit, detail) dengan color palette yang aku mau
+    9. Gunakan Tailwind classes untuk mobile responsiveness
+    10. Navbar ada hamburger menu untuk mobile
+    11. Grid layout otomatis adjust (1 kolom mobile, 2-3 kolom desktop)

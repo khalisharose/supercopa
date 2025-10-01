@@ -1,0 +1,101 @@
+{% load static %}
+<article class="rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 border border-pink-200" style="border-color: #F35695;">
+
+  <!-- Thumbnail -->
+  <div class="relative overflow-hidden bg-white" style="height: 250px;">
+    {% if product.thumbnail %}
+      <img src="{{ product.thumbnail }}" 
+           alt="{{ product.name }}" 
+           class="w-full h-full object-contain">
+    {% else %}
+      <div class="w-full h-full" style="background-color: #F8DBDB;"></div>
+    {% endif %}
+
+    <!-- Category Badge -->
+    <div class="absolute top-3 left-3">
+      <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium text-white shadow-sm"
+            style="background-color: #F35695;">
+        {{ product.get_category_display }}
+      </span>
+    </div>
+
+    <!-- Status Badges -->
+    <div class="absolute top-3 right-3 flex space-x-2">
+      {% if product.is_featured %}
+        <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium text-white"
+              style="background: linear-gradient(to right, #F98B05, #DDE255);">
+          Featured
+        </span>
+      {% endif %}
+      {% if product.is_official_merch %}
+        <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium text-white"
+              style="background-color: #264414;">
+          Official
+        </span>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Content Hijau Tua -->
+  <div class="flex flex-col justify-between p-5" style="background-color: #264414; min-height: 220px;">
+    
+    <!-- Tanggal & Harga -->
+    <div class="text-sm font-semibold mb-2" style="color: #F98B05;">
+      Rp {{ product.price }}
+    </div>
+
+    <!-- Nama Produk -->
+    <h3 class="text-lg font-semibold mb-2 leading-tight" style="color: #ffffff;">
+      <a href="{% url 'main:show_Product' product.id %}" 
+         class="transition-colors"
+         onmouseover="this.style.color='#F98B05'"
+         onmouseout="this.style.color='#ffffff'">
+        {{ product.name }}
+      </a>
+    </h3>
+
+    <!-- Deskripsi -->
+    <p class="text-sm leading-relaxed line-clamp-2 mb-4" style="color: #e0e0e0;">
+      {{ product.description|truncatewords:15 }}
+    </p>
+
+    <!-- Tombol Aksi -->
+    {% if user.is_authenticated and product.user == user %}
+      <div class="flex items-center justify-between pt-3 border-t" style="border-color: rgba(255,255,255,0.2);">
+        <a href="{% url 'main:show_Product' product.id %}" 
+           class="font-medium text-sm transition-colors" 
+           style="color: #F98B05;" 
+           onmouseover="this.style.color='#DDE255'" 
+           onmouseout="this.style.color='#F98B05'">
+          Read more
+        </a>
+        <div class="flex space-x-2">
+          <a href="{% url 'main:edit_product' product.id %}" 
+             class="text-sm transition-colors" 
+             style="color: #DDE255;" 
+             onmouseover="this.style.color='#F8DBDB'" 
+             onmouseout="this.style.color='#DDE255'">
+            Edit
+          </a>
+          <a href="{% url 'main:delete_product' product.id %}" 
+             class="text-sm transition-colors" 
+             style="color: #F35695;" 
+             onmouseover="this.style.color='#F8DBDB'" 
+             onmouseout="this.style.color='#F35695'">
+            Delete
+          </a>
+        </div>
+      </div>
+    {% else %}
+      <div class="pt-3 border-t" style="border-color: rgba(255,255,255,0.2);">
+        <a href="{% url 'main:show_Product' product.id %}" 
+           class="font-medium text-sm transition-colors" 
+           style="color: #F98B05;" 
+           onmouseover="this.style.color='#DDE255'" 
+           onmouseout="this.style.color='#F98B05'">
+          Read more →
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</article>

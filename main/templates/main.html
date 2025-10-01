@@ -1,56 +1,63 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>Supercopa Products</title>
+{% endblock meta %}
+
 {% block content %}
+{% include 'navbar.html' %}
+<div class="w-full pt-16 min-h-screen" style="background-color: #F8DBDB;">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-<h1>Supercopa</h1>
+    <!-- Header Section -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold mb-2" style="color: #F35695;">Latest Supercopa Products</h1>
+      <p class="font-medium italic" style="color: #264414;">Stay updated with the latest football merchandise and collections</p>
+    </div>
 
-<h5>NPM: </h5>
-<p>{{ npm }}</p>
+    <!-- Filter Section -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 bg-white rounded-lg border p-4 shadow-sm" style="border-color: #F35695; background-color: #264414;">
+      <div class="flex space-x-3 mb-4 sm:mb-0">
+        <a href="?" class="px-4 py-2 rounded-md font-medium transition-colors" 
+           style="{% if request.GET.filter == 'all' or not request.GET.filter %}background-color: #DDE255; color: #264414;{% else %}border: 2px solid #DDE255; color: #264414; background-color: white;{% endif %}"
+           onmouseover="{% if request.GET.filter != 'all' and request.GET.filter %}this.style.backgroundColor='#F8DBDB'{% endif %}"
+           onmouseout="{% if request.GET.filter != 'all' and request.GET.filter %}this.style.backgroundColor='white'{% endif %}">
+          All Products
+        </a>
+        <a href="?filter=my" class="px-4 py-2 rounded-md font-medium transition-colors"
+           style="{% if request.GET.filter == 'my' %}background-color: #F98B05; color: white;{% else %}border: 2px solid #F98B05; color: #F35695; background-color: white;{% endif %}"
+           onmouseover="{% if request.GET.filter != 'my' %}this.style.backgroundColor='#F8DBDB'{% endif %}"
+           onmouseout="{% if request.GET.filter != 'my' %}this.style.backgroundColor='white'{% endif %}">
+          My Products
+        </a>
+      </div>
+      {% if user.is_authenticated %}
+        <div class="text-sm" style="color: #F98B05;">
+          Last login: {{ last_login }}
+        </div>
+      {% endif %}
+    </div>
 
-<h5>Name:</h5>
-<p>{{ name }}</p>
-
-<h5>Class:</h5>
-<p>{{ class }}</p>
-
-<a href="{% url 'main:create_Product' %}">
-  <button>+ Add Product</button>
-</a>
-
-<a href="{% url 'main:logout' %}">
-  <button>Logout</button>
-</a>
-<h5>Sesi terakhir login: {{ last_login }}</h5>
-<hr>
-<a href="?filter=all">
-    <button type="button">All Product</button>
-</a>
-<a href="?filter=my">
-    <button type="button">My Product</button>
-</a> 
-{% if not product_list %}
-<p>Belum ada data produk pada Supercopa.</p>
-{% else %}
-
-{% for product in product_list %}
-<div>
-  <h2><a href="{% url 'main:show_Product' product.id %}">{{ product.name }}</a></h2>
-
-  <p><b>{{ product.category }}</b>{% if product.is_featured %} | 
-    <b>Featured</b>{% endif %}{% if product.is_official_merch %} | 
-    <b>Official</b>{% endif %}</p>
-
-  {% if product.thumbnail %}
-  <img src="{{ product.thumbnail }}" alt="thumbnail" width="150" height="100">
-  <br />
-  {% endif %}
-
-  <p>{{ product.description|truncatewords:25 }}...</p>
-
-  <p><a href="{% url 'main:show_Product' product.id %}"><button>Read More</button></a></p>
+    <!-- Product Grid -->
+    {% if not product_list %}
+      <div class="bg-white rounded-lg border p-12 text-center shadow-md" style="border-color: #F35695;">
+        <div class="w-32 h-32 mx-auto mb-4">
+          <img src="{% static 'image/no-product.png' %}" alt="No product available" class="w-full h-full object-contain">
+        </div>
+        <h3 class="text-lg font-medium text-black mb-2">No product found</h3>
+        <p class="text-gray-500 mb-6">Be the first to share football products with the community.</p>
+        <a href="{% url 'main:create_Product' %}" class="inline-flex items-center px-4 py-2 text-white rounded-md transition-colors" style="background: linear-gradient(to right, #F98B05, #DDE255);" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+          Create Product
+        </a>
+      </div>
+    {% else %}
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for product in product_list %}
+          {% include 'card_product.html' with product=product %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
 </div>
-
-<hr>
-{% endfor %}
-
-{% endif %}
-  {% endblock content %}
+{% endblock content %}

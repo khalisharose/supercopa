@@ -1,0 +1,59 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
+
+.form-style {.form-style form input,
+.form-style form textarea,
+.form-style form select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 2px solid #F35695; /* hot pink border */
+    border-radius: 0.375rem;
+    background-color: #F8DBDB; /* soft pink background */
+    transition: all 0.2s ease;
+}
+
+.form-style form input:focus,
+.form-style form textarea:focus,
+.form-style form select:focus {
+    outline: none;
+    border-color: #F98B05; /* orange */
+    box-shadow: 0 0 0 3px rgba(249, 139, 5, 0.3); /* soft orange glow */
+}
+
+/* Checkbox style */
+.form-style input[type="checkbox"] {
+    width: 1.25rem;
+    height: 1.25rem;
+    padding: 0;
+    border: 2px solid #F35695; /* hot pink border */
+    border-radius: 0.375rem;
+    background-color: #ffffff;
+    cursor: pointer;
+    position: relative;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    transition: all 0.2s ease;
+}
+
+.form-style input[type="checkbox"]:checked {
+    background-color: #264414; /* dark green */
+    border-color: #264414;
+}
+
+.form-style input[type="checkbox"]:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-weight: bold;
+    font-size: 0.875rem;
+}
+
+.form-style input[type="checkbox"]:focus {
+    outline: none;
+    border-color: #DDE255; /* lime yellow focus */
+    box-shadow: 0 0 0 3px rgba(221, 226, 85, 0.3); /* soft lime yellow glow */
+}

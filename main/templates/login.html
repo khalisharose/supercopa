@@ -1,32 +1,114 @@
 {% extends 'base.html' %}
 
 {% block meta %}
-<title>Login</title>
+<title>Login - Supercopa</title>
 {% endblock meta %}
 
 {% block content %}
-<div class="login">
-  <h1>Login</h1>
+<div class="w-full min-h-screen flex items-center justify-center p-8" style="background-color: #F8DBDB;">
+  <div class="max-w-md w-full">
+    <div class="bg-white rounded-lg border p-6 sm:p-8 form-style shadow-md" style="border-color: #F35695;">
+      <div class="text-center mb-8">
+        <h1 class="text-2xl font-bold text-black mb-2">Sign In</h1>
+        <p class="font-medium italic" style="color: #264414;">Welcome back to Supercopa</p>
+      </div>
 
-  <form method="POST" action="">
-    {% csrf_token %}
-    <table>
-      {{ form.as_table }}
-      <tr>
-        <td></td>
-        <td><input class="btn login_btn" type="submit" value="Login" /></td>
-      </tr>
-    </table>
-  </form>
+      <!-- Form Errors Display -->
+      {% if form.non_field_errors %}
+        <div class="mb-6">
+          {% for error in form.non_field_errors %}
+            <div class="px-4 py-3 rounded-md text-sm border" style="background-color: #F8DBDB; border-color: #F98B05; color: #264414;">
+              {{ error }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
 
-  {% if messages %}
-  <ul>
-    {% for message in messages %}
-    <li>{{ message }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %} Don't have an account yet?
-  <a href="{% url 'main:register' %}">Register Now</a>
+      {% if form.errors %}
+        <div class="mb-6">
+          {% for field, errors in form.errors.items %}
+            {% if field != '__all__' %}
+              {% for error in errors %}
+                <div class="px-4 py-3 rounded-md text-sm border mb-2" style="background-color: #F8DBDB; border-color: #F98B05; color: #264414;">
+                  <strong>{{ field|title }}:</strong> {{ error }}
+                </div>
+              {% endfor %}
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <form method="POST" action="" class="space-y-6">
+        {% csrf_token %}
+        
+        <div>
+          <label for="username" class="block text-sm font-medium text-gray-700 mb-2">Username</label>
+          <input 
+            id="username" 
+            name="username" 
+            type="text" 
+            required 
+            class="w-full px-4 py-3 border rounded-md focus:outline-none transition-colors" 
+            style="border-color: #F35695; background-color: #F8DBDB;"
+            onfocus="this.style.borderColor='#F98B05'; this.style.boxShadow='0 0 0 3px rgba(249, 139, 5, 0.3)';"
+            onblur="this.style.borderColor='#F35695'; this.style.boxShadow='none';"
+            placeholder="Enter your username">
+        </div>
+
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+          <input 
+            id="password" 
+            name="password" 
+            type="password" 
+            required 
+            class="w-full px-4 py-3 border rounded-md focus:outline-none transition-colors" 
+            style="border-color: #F35695; background-color: #F8DBDB;"
+            onfocus="this.style.borderColor='#F98B05'; this.style.boxShadow='0 0 0 3px rgba(249, 139, 5, 0.3)';"
+            onblur="this.style.borderColor='#F35695'; this.style.boxShadow='none';"
+            placeholder="Enter your password">
+        </div>
+
+        <button 
+          type="submit" 
+          class="w-full text-white font-medium py-3 px-4 rounded-md transition-colors"
+          style="background: linear-gradient(to right, #F98B05, #DDE255);"
+          onmouseover="this.style.opacity='0.9'"
+          onmouseout="this.style.opacity='1'">
+          Sign In
+        </button>
+      </form>
+
+      <!-- Messages Display -->
+      {% if messages %}
+        <div class="mt-6">
+          {% for message in messages %}
+            <div 
+              class="px-4 py-3 rounded-md text-sm border"
+              style="
+                {% if message.tags == 'success' %}
+                  background-color: #F8DBDB; border-color: #264414; color: #264414;
+                {% elif message.tags == 'error' %}
+                  background-color: #F8DBDB; border-color: #F98B05; color: #264414;
+                {% else %}
+                  background-color: #F8DBDB; border-color: #DDE255; color: #264414;
+                {% endif %}
+              ">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <div class="mt-6 text-center pt-6 border-t" style="border-color: #F8DBDB;">
+        <p class="text-gray-500 text-sm">
+          Don't have an account? 
+          <a href="{% url 'main:register' %}" class="font-medium transition-colors" style="color: #264414;" onmouseover="this.style.color='#F98B05'" onmouseout="this.style.color='#264414'">
+            Register Now
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
 </div>
-
 {% endblock content %}
