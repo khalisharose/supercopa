@@ -9,7 +9,10 @@
     
     <!-- Back Navigation -->
     <div class="mb-6">
-      <a href="{% url 'main:show_main' %}" class="font-medium transition-colors" style="color: #F35695;" onmouseover="this.style.color='#F98B05'" onmouseout="this.style.color='#F35695'">
+      <a href="{% url 'main:show_main' %}" class="font-medium transition-colors" 
+         style="color: #F35695;" 
+         onmouseover="this.style.color='#F98B05'" 
+         onmouseout="this.style.color='#F35695'">
         ← Back to Products
       </a>
     </div>
@@ -21,7 +24,7 @@
         <p class="text-gray-600">Add your product to share with the community</p>
       </div>
       
-      <form method="POST" class="space-y-6">
+      <form id="create-product-form" class="space-y-6">
         {% csrf_token %}
         {% for field in form %}
           <div>
@@ -60,4 +63,80 @@
     </div>
   </div>
 </div>
+
+<!-- Toast Component -->
+<div id="toast-component"
+     class="fixed bottom-5 right-5 px-4 py-3 rounded-lg shadow-lg opacity-0 translate-y-64 transition-all duration-500 z-50"
+     style="min-width: 280px; background-color: #F8BDBB; color: #264414; border: 2px solid #264414;">
+  <p id="toast-title" class="font-bold text-sm"></p>
+  <p id="toast-message" class="text-sm mt-1"></p>
+</div>
+
+<script>
+// Fungsi toast (pakai punyamu)
+function showToast(title, message, type = 'normal', duration = 3000) {
+    const toast = document.getElementById('toast-component');
+    const titleEl = document.getElementById('toast-title');
+    const msgEl = document.getElementById('toast-message');
+
+    toast.style.backgroundColor = '';
+    toast.style.color = '';
+    toast.style.border = '';
+
+    if (type === 'success') {
+        toast.style.backgroundColor = '#DDE255';
+        toast.style.color = '#264414';
+        toast.style.border = '2px solid #264414';
+    } else if (type === 'error') {
+        toast.style.backgroundColor = '#F35695';
+        toast.style.color = '#fff';
+        toast.style.border = '2px solid #F98805';
+    } else if (type === 'warning') {
+        toast.style.backgroundColor = '#F98805';
+        toast.style.color = '#fff';
+        toast.style.border = '2px solid #264414';
+    } else {
+        toast.style.backgroundColor = '#F8BDBB';
+        toast.style.color = '#264414';
+        toast.style.border = '2px solid #264414';
+    }
+
+    titleEl.textContent = title;
+    msgEl.textContent = message;
+
+    toast.classList.remove('opacity-0', 'translate-y-64');
+    toast.classList.add('opacity-100', 'translate-y-0');
+
+    setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', 'translate-y-64');
+    }, duration);
+}
+
+// Submit AJAX
+document.getElementById('create-product-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    const response = await fetch("{% url 'main:add_product_entry_ajax' %}", {
+        method: "POST",
+        headers: {
+            'X-CSRFToken': csrfToken
+        },
+        body: formData
+    });
+
+    if (response.ok) {
+        showToast('Success', 'Product successfully created!', 'success');
+        this.reset();
+        setTimeout(() => {
+            window.location.href = "{% url 'main:show_main' %}";
+        }, 1500);
+    } else {
+        showToast('Error', 'Failed to create product.', 'error');
+    }
+});
+</script>
 {% endblock %}
