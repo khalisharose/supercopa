@@ -1,0 +1,183 @@
+<!-- Modal Create/Edit Product -->
+<div id="crudModal" class="hidden fixed inset-0 z-50 w-full flex items-center justify-center bg-[#475d5b]/60">
+  <div id="crudModalContent" class="bg-[#e8e4db] rounded-2xl shadow-lg w-5/6 sm:w-3/5 md:w-1/2 lg:w-2/5 xl:w-1/3 max-h-screen overflow-y-auto border border-[#004643] transition-all duration-200 opacity-0 scale-95">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between p-4 border-b border-[#004643] bg-[#004643] rounded-t-2xl">
+      <div>
+        <h3 id="modalTitle" class="text-xl font-semibold text-[#fffffe]">Create New Product</h3>
+        <p id="modalSubtitle" class="text-sm text-[#faae2b] mt-1">Add your latest merchandise or exclusive items</p>
+      </div>
+      <button type="button" class="text-[#e8e4db] hover:text-[#faae2b]" onclick="hideModal()">
+        ✕
+      </button>
+    </div>
+
+    <!-- Body -->
+    <form id="productForm" class="px-6 py-4 space-y-6 form-style">
+      <input type="hidden" id="productId" name="productId" value="">
+
+      <div>
+        <label class="block text-sm font-medium text-[#004643]">Product Name *</label>
+        <input id="name" name="name" required class="mt-1 w-full border border-[#475d5b] rounded-md px-3 py-2 bg-[#fffffe] text-[#004643]">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-[#004643]">Description *</label>
+        <textarea id="description" name="description" rows="3" required class="mt-1 w-full border border-[#475d5b] rounded-md px-3 py-2 bg-[#fffffe] text-[#004643]"></textarea>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-[#004643]">Price *</label>
+        <input type="number" id="price" name="price" required class="mt-1 w-full border border-[#475d5b] rounded-md px-3 py-2 bg-[#fffffe] text-[#004643]">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-[#004643]">Category *</label>
+        <select id="category" name="category" required class="mt-1 w-full border border-[#475d5b] rounded-md px-3 py-2 bg-[#fffffe] text-[#004643]">
+          <option value="">Choose a category</option>
+          <option value="Jersey">Jersey</option>
+          <option value="Ball">Ball</option>
+          <option value="Boots">Boots</option>
+          <option value="Accessories">Accessories</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-[#004643]">Thumbnail URL</label>
+        <input type="url" id="thumbnail" name="thumbnail" placeholder="https://example.com/image.jpg" class="mt-1 w-full border border-[#475d5b] rounded-md px-3 py-2 bg-[#fffffe] text-[#004643]">
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-[#004643]">Stock *</label>
+          <input type="number" id="stock" name="stock" required class="mt-1 w-full border border-[#475d5b] rounded-md px-3 py-2 bg-[#fffffe] text-[#004643]">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-[#004643]">Size</label>
+          <input id="size" name="size" placeholder="e.g., M, L, XL" class="mt-1 w-full border border-[#475d5b] rounded-md px-3 py-2 bg-[#fffffe] text-[#004643]">
+        </div>
+      </div>
+
+      <div class="space-y-2">
+        <label class="flex items-center"><input id="is_featured" name="is_featured" type="checkbox" class="w-4 h-4 text-[#faae2b]"> <span class="ml-2 text-sm">Featured Product</span></label>
+        <label class="flex items-center"><input id="is_signed" name="is_signed" type="checkbox" class="w-4 h-4 text-[#faae2b]"> <span class="ml-2 text-sm">Signed Item</span></label>
+        <label class="flex items-center"><input id="is_official_merch" name="is_official_merch" type="checkbox" class="w-4 h-4 text-[#faae2b]"> <span class="ml-2 text-sm">Official Merchandise</span></label>
+      </div>
+
+      <!-- Footer -->
+      <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t border-[#004643]">
+        <button type="button" class="px-6 py-3 border border-[#475d5b] text-[#004643] rounded-md hover:bg-[#e8e4db]" onclick="hideModal()">Cancel</button>
+        <button type="submit" id="submitProduct" class="flex-1 bg-[#004643] text-[#fffffe] px-6 py-3 rounded-md font-medium hover:bg-[#faae2b] hover:text-[#004643] transition">Add Product</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  // === SHOW CREATE MODAL ===
+  function showProductModal() {
+    const modal = document.getElementById("crudModal");
+    const modalContent = document.getElementById("crudModalContent");
+    const title = document.getElementById("modalTitle");
+    const subtitle = document.getElementById("modalSubtitle");
+    const submitBtn = document.getElementById("submitProduct");
+    const form = document.getElementById("productForm");
+
+    form.reset();
+    document.getElementById("productId").value = "";
+    title.textContent = "Create New Product";
+    subtitle.textContent = "Add your latest merchandise or exclusive items";
+    submitBtn.textContent = "Add Product";
+
+    modal.classList.remove("hidden");
+    setTimeout(() => modalContent.classList.replace("opacity-0", "opacity-100"), 10);
+    modalContent.classList.replace("scale-95", "scale-100");
+  }
+
+  // === SHOW EDIT MODAL ===
+  async function showEditModal(productId) {
+    const modal = document.getElementById("crudModal");
+    const modalContent = document.getElementById("crudModalContent");
+    const title = document.getElementById("modalTitle");
+    const subtitle = document.getElementById("modalSubtitle");
+    const submitBtn = document.getElementById("submitProduct");
+    const form = document.getElementById("productForm");
+
+    title.textContent = "Edit Product";
+    subtitle.textContent = "Update your product information";
+    submitBtn.textContent = "Update Product";
+    document.getElementById("productId").value = productId;
+
+    try {
+      const res = await fetch(`{% url 'main:show_json_by_id' '00000000-0000-0000-0000-000000000000' %}`.replace('00000000-0000-0000-0000-000000000000', productId));
+      const product = await res.json();
+
+      for (const key in product) {
+        const input = document.getElementById(key);
+        if (input) {
+          if (input.type === "checkbox") input.checked = product[key];
+          else input.value = product[key];
+        }
+      }
+
+      modal.classList.remove("hidden");
+      setTimeout(() => modalContent.classList.replace("opacity-0", "opacity-100"), 10);
+      modalContent.classList.replace("scale-95", "scale-100");
+    } catch (err) {
+      console.error("Error fetching product:", err);
+      alert("Failed to load product data.");
+    }
+  }
+
+  // === HIDE MODAL ===
+  function hideModal() {
+    const modal = document.getElementById("crudModal");
+    const modalContent = document.getElementById("crudModalContent");
+    const form = document.getElementById("productForm");
+    modalContent.classList.replace("opacity-100", "opacity-0");
+    modalContent.classList.replace("scale-100", "scale-95");
+    setTimeout(() => {
+      modal.classList.add("hidden");
+      form.reset();
+      document.getElementById("productId").value = "";
+    }, 150);
+  }
+
+  // === SUBMIT (ADD / EDIT) ===
+  async function submitProductForm(e) {
+    e.preventDefault();
+    const form = document.getElementById("productForm");
+    const formData = new FormData(form);
+    const productId = document.getElementById("productId").value;
+
+    const url = productId
+      ? `{% url 'main:edit_product_ajax' '00000000-0000-0000-0000-000000000000' %}`.replace('00000000-0000-0000-0000-000000000000', productId)
+      : `{% url 'main:add_product_entry_ajax' %}`;
+
+    try {
+      const response = await fetch(url, { method: "POST", body: formData });
+      const result = await response.json();
+
+      if (response.ok && (result.success || response.status === 201)) {
+        hideModal();
+        await fetchProductsFromServer();
+        alert(productId ? "✅ Product updated!" : "✅ Product added!");
+      } else {
+        alert(`⚠️ ${result.error || "Failed to save product"}`);
+      }
+    } catch (err) {
+      console.error("Submit error:", err);
+      alert("❌ Something went wrong.");
+    }
+  }
+
+  // === EVENT LISTENER ===
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("productForm");
+    if (!form.dataset.listenerBound) {
+      form.addEventListener("submit", submitProductForm);
+      form.dataset.listenerBound = "true";
+    }
+  });
+</script>

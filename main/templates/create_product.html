@@ -17,8 +17,8 @@
       </a>
     </div>
     
-    <!-- Form -->
-    <div class="bg-white rounded-lg border p-6 sm:p-8 form-style" style="border-color: #F35695;">
+    <!-- Form Card -->
+    <div class="bg-white rounded-lg border p-6 sm:p-8 form-style shadow-sm" style="border-color: #F35695;">
       <div class="mb-8">
         <h1 class="text-2xl font-bold text-black mb-2">Create New Product</h1>
         <p class="text-gray-600">Add your product to share with the community</p>
@@ -43,8 +43,8 @@
           </div>
         {% endfor %}
         
+        <!-- Buttons -->
         <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t" style="border-color: #F8DBDB;">
-          <!-- Cancel button -->
           <a href="{% url 'main:show_main' %}" 
              class="order-2 sm:order-1 px-6 py-3 border rounded-md font-medium transition-colors text-center"
              style="border-color: #F35695; color: #F35695;"
@@ -52,7 +52,7 @@
              onmouseout="this.style.backgroundColor='transparent'">
             Cancel
           </a>
-          <!-- Submit button -->
+
           <button type="submit" 
                   class="order-1 sm:order-2 flex-1 text-white px-6 py-3 rounded-md font-medium transition-colors hover:opacity-90"
                   style="background: linear-gradient(to right, #F98B05, #DDE255);">
@@ -73,70 +73,81 @@
 </div>
 
 <script>
-// Fungsi toast (pakai punyamu)
+// === Toast Component (same style as show_main.html) ===
 function showToast(title, message, type = 'normal', duration = 3000) {
-    const toast = document.getElementById('toast-component');
-    const titleEl = document.getElementById('toast-title');
-    const msgEl = document.getElementById('toast-message');
+  const toast = document.getElementById('toast-component');
+  const titleEl = document.getElementById('toast-title');
+  const msgEl = document.getElementById('toast-message');
 
-    toast.style.backgroundColor = '';
-    toast.style.color = '';
-    toast.style.border = '';
+  toast.style.backgroundColor = '';
+  toast.style.color = '';
+  toast.style.border = '';
 
-    if (type === 'success') {
-        toast.style.backgroundColor = '#DDE255';
-        toast.style.color = '#264414';
-        toast.style.border = '2px solid #264414';
-    } else if (type === 'error') {
-        toast.style.backgroundColor = '#F35695';
-        toast.style.color = '#fff';
-        toast.style.border = '2px solid #F98805';
-    } else if (type === 'warning') {
-        toast.style.backgroundColor = '#F98805';
-        toast.style.color = '#fff';
-        toast.style.border = '2px solid #264414';
-    } else {
-        toast.style.backgroundColor = '#F8BDBB';
-        toast.style.color = '#264414';
-        toast.style.border = '2px solid #264414';
-    }
+  if (type === 'success') {
+    toast.style.backgroundColor = '#DDE255';
+    toast.style.color = '#264414';
+    toast.style.border = '2px solid #264414';
+  } else if (type === 'error') {
+    toast.style.backgroundColor = '#F35695';
+    toast.style.color = '#fff';
+    toast.style.border = '2px solid #F98805';
+  } else if (type === 'warning') {
+    toast.style.backgroundColor = '#F98805';
+    toast.style.color = '#fff';
+    toast.style.border = '2px solid #264414';
+  } else {
+    toast.style.backgroundColor = '#F8BDBB';
+    toast.style.color = '#264414';
+    toast.style.border = '2px solid #264414';
+  }
 
-    titleEl.textContent = title;
-    msgEl.textContent = message;
+  titleEl.textContent = title;
+  msgEl.textContent = message;
 
-    toast.classList.remove('opacity-0', 'translate-y-64');
-    toast.classList.add('opacity-100', 'translate-y-0');
+  toast.classList.remove('opacity-0', 'translate-y-64');
+  toast.classList.add('opacity-100', 'translate-y-0');
 
-    setTimeout(() => {
-        toast.classList.remove('opacity-100', 'translate-y-0');
-        toast.classList.add('opacity-0', 'translate-y-64');
-    }, duration);
+  setTimeout(() => {
+    toast.classList.remove('opacity-100', 'translate-y-0');
+    toast.classList.add('opacity-0', 'translate-y-64');
+  }, duration);
 }
 
-// Submit AJAX
-document.getElementById('create-product-form').addEventListener('submit', async function(e) {
+// === Handle Form Submit via AJAX ===
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('create-product-form');
+  if (!form) return;
+
+  form.addEventListener('submit', async function (e) {
     e.preventDefault();
 
-    const formData = new FormData(this);
+    const formData = new FormData(form);
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-    const response = await fetch("{% url 'main:add_product_entry_ajax' %}", {
+    try {
+      const response = await fetch("{% url 'main:add_product_entry_ajax' %}", {
         method: "POST",
-        headers: {
-            'X-CSRFToken': csrfToken
-        },
-        body: formData
-    });
+        headers: { 'X-CSRFToken': csrfToken },
+        body: formData,
+      });
 
-    if (response.ok) {
+      if (response.ok) {
         showToast('Success', 'Product successfully created!', 'success');
-        this.reset();
+        form.reset();
+        // Redirect ke halaman utama setelah sukses
         setTimeout(() => {
-            window.location.href = "{% url 'main:show_main' %}";
+          window.location.href = "{% url 'main:show_main' %}";
         }, 1500);
-    } else {
-        showToast('Error', 'Failed to create product.', 'error');
+      } else {
+        const errorText = await response.text();
+        console.error('Server error:', errorText);
+        showToast('Error', 'Failed to create product. Please try again.', 'error');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      showToast('Error', 'An unexpected error occurred.', 'error');
     }
+  });
 });
 </script>
 {% endblock %}

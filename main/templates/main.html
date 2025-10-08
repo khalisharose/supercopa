@@ -7,9 +7,11 @@
 
 {% block content %}
 {% include 'navbar.html' %}
+
 <div class="w-full pt-16 min-h-screen" style="background-color: #F8DBDB;">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Header Section -->
+    
+    <!-- HEADER -->
     <div class="mb-8">
       <h1 class="text-3xl font-bold mb-2" style="color: #F35695;">Latest Supercopa Products</h1>
       <p class="font-medium italic" style="color: #264414;">
@@ -17,34 +19,40 @@
       </p>
     </div>
 
-    <!-- Button to open modal -->
-    <button onclick="showProductModal()" 
-      class="inline-flex items-center px-4 py-2 rounded-md font-semibold transition-colors mb-4"
-      style="background-color: #DDE255; color: #264414; border: 2px solid #264414;"
-      onmouseover="this.style.backgroundColor='#F98B05'; this.style.color='white';"
-      onmouseout="this.style.backgroundColor='#DDE255'; this.style.color='#264414';">
-      Create Product by AJAX
-    </button>
+    <!-- ACTION BUTTONS -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 space-y-3 sm:space-y-0">
+      <div class="flex space-x-3">
+        <button onclick="showProductModal()"
+          class="inline-flex items-center px-4 py-2 rounded-md font-semibold transition-colors"
+          style="background-color: #DDE255; color: #264414; border: 2px solid #264414;"
+          onmouseover="this.style.backgroundColor='#F98B05'; this.style.color='white';"
+          onmouseout="this.style.backgroundColor='#DDE255'; this.style.color='#264414';">
+          + Create Product
+        </button>
 
-    <!-- Filter Section -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 rounded-lg border p-4 shadow-sm"
-      style="background-color:#264414; border-color:#F35695;">
-      <div class="flex space-x-3 mb-4 sm:mb-0">
-        <a id="filter-all" class="px-4 py-2 rounded-md font-medium transition-colors"
-          style="background-color: #DDE255; color: #264414;">
-          All Products
-        </a>
-        <a id="filter-my" class="px-4 py-2 rounded-md font-medium transition-colors border-2"
-          style="border-color:#F98B05; color:#F35695; background-color:white;">
-          My Products
-        </a>
+        <button id="refresh-btn"
+        class="inline-flex items-center px-4 py-2 rounded-md font-semibold transition-all border-2 border-[#F35695] bg-[#F8BBD0] text-[#F35695] hover:bg-[#F9C4D2] hover:opacity-90">
+        Refresh Products
+      </button>
+
+
       </div>
+
       {% if user.is_authenticated %}
       <div class="text-sm" style="color:#F98B05;">Last login: {{ last_login }}</div>
       {% endif %}
     </div>
 
-    <!-- Loading State -->
+    <!-- FILTER -->
+    <div class="flex space-x-3 mb-8 rounded-lg border p-4 shadow-sm"
+      style="background-color:#264414; border-color:#F35695;">
+      <a id="filter-all" class="px-4 py-2 rounded-md font-medium transition-colors"
+        style="background-color: #DDE255; color: #264414;">All Products</a>
+      <a id="filter-my" class="px-4 py-2 rounded-md font-medium transition-colors border-2"
+        style="border-color:#F98B05; color:#F35695; background-color:white;">My Products</a>
+    </div>
+
+    <!-- LOADING STATE -->
     <div id="loading" class="bg-white rounded-lg border p-12 text-center hidden" style="border-color:#F35695;">
       <svg class="animate-spin h-8 w-8 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
         style="color:#F35695;">
@@ -55,13 +63,13 @@
       <p class="text-gray-600 mt-3">Loading products...</p>
     </div>
 
-    <!-- Error State -->
+    <!-- ERROR STATE -->
     <div id="error" class="hidden text-center text-red-600 font-medium"></div>
 
-    <!-- Product Grid -->
+    <!-- PRODUCT GRID -->
     <div id="grid" class="hidden"></div>
 
-    <!-- Empty State -->
+    <!-- EMPTY STATE -->
     <div id="empty" class="bg-white rounded-lg border p-12 text-center hidden" style="border-color:#F35695;">
       <div class="w-32 h-32 mx-auto mb-4">
         <img src="{% static 'image/no-product.png' %}" alt="No product available"
@@ -69,36 +77,82 @@
       </div>
       <h3 class="text-lg font-medium text-black mb-2">No products found</h3>
       <p class="text-gray-500 mb-6">Be the first to share your football products.</p>
-      <a href="{% url 'main:create_Product' %}" 
+      <button onclick="showProductModal()"
          class="inline-flex items-center px-4 py-2 text-white rounded-md transition-colors"
-         style="background-color:#F98B05;" 
-         onmouseover="this.style.opacity='0.9'" 
+         style="background-color:#F98B05;"
+         onmouseover="this.style.opacity='0.9'"
          onmouseout="this.style.opacity='1'">
         Create Product
-      </a>
+      </button>
     </div>
   </div>
+
+  <!-- MODALS -->
   {% include 'modal.html' %}
+
+  <!-- ✨ MODAL EDIT PRODUCT -->
+  <div id="editModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-2xl w-96">
+      <h2 class="text-lg font-semibold mb-4 text-center text-[#F35695]">Edit Product</h2>
+      <form id="editForm" onsubmit="event.preventDefault(); submitEditForm();">
+        <input type="hidden" id="edit-id" name="id">
+
+        <label class="block mb-2 font-medium">Name</label>
+        <input type="text" id="edit-name" name="name" class="border w-full p-2 mb-3 rounded">
+
+        <label class="block mb-2 font-medium">Price</label>
+        <input type="number" id="edit-price" name="price" class="border w-full p-2 mb-3 rounded">
+
+        <label class="block mb-2 font-medium">Description</label>
+        <textarea id="edit-description" name="description" class="border w-full p-2 mb-3 rounded"></textarea>
+
+        <label class="block mb-2 font-medium">Category</label>
+        <input type="text" id="edit-category" name="category" class="border w-full p-2 mb-3 rounded">
+
+        <label class="block mb-2 font-medium">Thumbnail URL</label>
+        <input type="text" id="edit-thumbnail" name="thumbnail" class="border w-full p-2 mb-3 rounded">
+
+        <label class="block mb-2 font-medium">Stock</label>
+        <input type="number" id="edit-stock" name="stock" class="border w-full p-2 mb-3 rounded">
+
+        <label class="block mb-2 font-medium">Size</label>
+        <input type="text" id="edit-size" name="size" class="border w-full p-2 mb-3 rounded">
+
+        <div class="flex justify-end space-x-3 mt-4">
+          <button type="button" onclick="document.getElementById('editModal').classList.add('hidden')" class="px-4 py-2 bg-gray-300 rounded">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-[#F35695] text-white rounded">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
 
+<!-- ==================== SCRIPT ==================== -->
 <script>
-// Config
 const PRODUCT_API_ENDPOINT = "{% url 'main:show_json' %}";
 const CURRENT_USER_ID = "{{ user.id|default_if_none:'' }}";
 
-// DOM
 const loadingSpinner = document.getElementById('loading');
 const errorMessage = document.getElementById('error');
 const emptyState = document.getElementById('empty');
 const productGrid = document.getElementById('grid');
 const showAllButton = document.getElementById('filter-all');
 const showMyButton = document.getElementById('filter-my');
+const refreshButton = document.getElementById('refresh-btn');
 
-// State
 let activeFilter = 'all';
 let allProducts = [];
 
-// Update filter button styles
+// Toggle Section Display
+function displaySection({ showLoading=false, showError=false, showEmpty=false, showGrid=false }) {
+  loadingSpinner.classList.toggle('hidden', !showLoading);
+  errorMessage.classList.toggle('hidden', !showError);
+  emptyState.classList.toggle('hidden', !showEmpty);
+  productGrid.classList.toggle('hidden', !showGrid);
+  if (showGrid) productGrid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6';
+}
+
+// Update Filter Buttons
 function updateFilterButtons() {
   if (activeFilter === 'all') {
     showAllButton.style.backgroundColor = "#DDE255";
@@ -113,27 +167,14 @@ function updateFilterButtons() {
   }
 }
 
-// Show/hide sections
-function displaySection({ showLoading=false, showError=false, showEmpty=false, showGrid=false }) {
-  loadingSpinner.classList.toggle('hidden', !showLoading);
-  errorMessage.classList.toggle('hidden', !showError);
-  emptyState.classList.toggle('hidden', !showEmpty);
-  productGrid.classList.toggle('hidden', !showGrid);
-  if (showGrid) {
-    productGrid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6';
-  }
-}
-
-// Build card element
+// Product Card
 function buildProductCard(product) {
   const card = document.createElement('article');
+  card.id = `product-card-${product.id}`;
   card.className = 'bg-white rounded-lg border hover:shadow-lg transition-shadow duration-300 overflow-hidden flex flex-col h-full';
   card.style.borderColor = '#F35695';
 
   const detailLink = `{% url 'main:show_Product' '00000000-0000-0000-0000-000000000000' %}`.replace('00000000-0000-0000-0000-000000000000', product.id);
-  const editLink = `{% url 'main:edit_product' '00000000-0000-0000-0000-000000000000' %}`.replace('00000000-0000-0000-0000-000000000000', product.id);
-  const deleteLink = `{% url 'main:delete_product' '00000000-0000-0000-0000-000000000000' %}`.replace('00000000-0000-0000-0000-000000000000', product.id);
-
   const name = DOMPurify.sanitize(product.name);
   const category = DOMPurify.sanitize(product.category);
   const description = DOMPurify.sanitize(product.description);
@@ -146,10 +187,9 @@ function buildProductCard(product) {
 
   const editDelete = CURRENT_USER_ID && String(CURRENT_USER_ID) === String(product.user_id)
     ? `<div class="flex space-x-2">
-         <a href="${editLink}" class="text-gray-600 hover:text-gray-700 text-sm">Edit</a>
-         <a href="${deleteLink}" class="text-red-600 hover:text-red-700 text-sm" onclick="return confirm('Are you sure you want to delete this product?')">Delete</a>
-       </div>`
-    : '';
+        <button onclick="showEditModal('${product.id}')" class="text-gray-600 hover:text-gray-700 text-sm">Edit</button>
+        <button onclick="deleteProduct('${product.id}')" class="text-red-600 hover:text-red-700 text-sm">Delete</button>
+      </div>` : '';
 
   card.innerHTML = `
     <div class="aspect-[16/9] relative overflow-hidden">
@@ -159,36 +199,26 @@ function buildProductCard(product) {
       </div>
     </div>
     <div class="p-5 flex flex-col flex-1">
-      <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 leading-tight">
+      <h3 class="text-lg font-semibold text-gray-900 mb-2">
         <a href="${detailLink}" class="hover:text-[#F35695] transition-colors">${name}</a>
       </h3>
       <p class="text-gray-600 text-sm mb-2">${description.slice(0, 80)}...</p>
       <p class="font-medium text-black mb-3">${price}</p>
       <div class="pt-3 border-t border-gray-100 flex items-center justify-between">
-        <a href="${detailLink}" 
-           class="inline-flex items-center px-4 py-2 text-white rounded-md transition-colors"
-           style="background-color:#F98B05;" 
-           onmouseover="this.style.opacity='0.9'" 
-           onmouseout="this.style.opacity='1'">
-          View Details
-        </a>
+        <a href="${detailLink}" class="inline-flex items-center px-4 py-2 text-white rounded-md" style="background-color:#F98B05;">View</a>
         ${editDelete}
       </div>
-    </div>
-  `;
+    </div>`;
   return card;
 }
 
-// Render products
+// Render Products
 function renderProducts(products) {
   productGrid.innerHTML = '';
-  products.forEach(p => {
-    const card = buildProductCard(p);
-    productGrid.appendChild(card);
-  });
+  products.forEach(p => productGrid.appendChild(buildProductCard(p)));
 }
 
-// Filter and display
+// Filter + Display
 function filterAndDisplay() {
   updateFilterButtons();
   const filtered = activeFilter === 'all'
@@ -202,120 +232,155 @@ function filterAndDisplay() {
   }
 }
 
-// Fetch news data from server
+// Fetch
 async function fetchProductsFromServer() {
+  displaySection({ showLoading: true });
   try {
-    displaySection({ showLoading: true });
-    
-    const response = await fetch(PRODUCT_API_ENDPOINT, {
-      headers: { 'Accept': 'application/json' },
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch product data from server');
-    }
-
-    const productData = await response.json();
-    allProducts = productData || [];
-
+    const res = await fetch(PRODUCT_API_ENDPOINT);
+    if (!res.ok) throw new Error('Fetch failed');
+    allProducts = await res.json();
     filterAndDisplay();
-  } catch (error) {
-    console.error('Error loading products:', error);
+  } catch (err) {
+    console.error(err);
+    errorMessage.textContent = "Failed to load products. Please try again.";
     displaySection({ showError: true });
   }
 }
 
-// Event handlers
-function handleShowAllProductsClick() {
-  activeFilter = 'all';
-  filterAndDisplay();
-}
-
-function handleShowMyProductsClick() {
-  activeFilter = 'my';
-  filterAndDisplay();
-}
-
-// Modal functions
+// Modal Add/Edit/Delete Functions
 function showProductModal() {
   const modal = document.getElementById('crudModal');
-  const modalContent = document.getElementById('crudModalContent');
-  
+  const content = document.getElementById('crudModalContent');
   modal.classList.remove('hidden');
-  setTimeout(() => {
-    modalContent.classList.remove('opacity-0', 'scale-95');
-    modalContent.classList.add('opacity-100', 'scale-100');
-  }, 50);
+  setTimeout(() => content.classList.replace('opacity-0', 'opacity-100'), 50);
 }
 
 function hideModal() {
-  const modal = document.getElementById('crudModal');
-  const modalContent = document.getElementById('crudModalContent');
-  
-  modalContent.classList.remove('opacity-100', 'scale-100');
-  modalContent.classList.add('opacity-0', 'scale-95');
-  
-  setTimeout(() => {
-    modal.classList.add('hidden');
-  }, 150);
+  document.getElementById('crudModal').classList.add('hidden');
+}
+
+function triggerProductEvent(eventName) {
+  document.dispatchEvent(new Event(eventName));
 }
 
 async function addProductEntry() {
   const form = document.querySelector('#productForm');
   const formData = new FormData(form);
-  
+
   try {
-    const response = await fetch("{% url 'main:add_product_entry_ajax' %}", {
+    const res = await fetch("{% url 'main:add_product_entry_ajax' %}", {
       method: "POST",
       body: formData,
     });
 
-    if (response.ok) {
+    if (res.ok) {
       form.reset();
       hideModal();
-      document.dispatchEvent(new Event('productAdded'));
-      
-      // Refresh products
-      await fetchProductsFromServer();
-      
-      alert('Product added successfully!');
+      showToast('Success', 'Product successfully created!', 'success');
+      triggerProductEvent("productAdded");
     } else {
-      alert('Failed to add product. Please try again.');
+      showToast('Error', 'Failed to create product', 'error');
     }
-  } catch (error) {
-    console.error('Error:', error);
-    alert('An error occurred. Please try again.');
+  } catch (err) {
+    console.error(err);
+    showToast('Error', 'Unexpected error', 'error');
   }
-  
-  return false;
 }
 
-// Form submit handler
-document.addEventListener("DOMContentLoaded", function() {
-  const form = document.getElementById("productForm");
-  form.addEventListener("submit", function(e) {
-    e.preventDefault();
-    addProductEntry();
+function showEditModal(id) {
+  fetch(`/show-json-by-id/${id}/`)
+    .then(response => response.json())
+    .then(data => {
+      // Isi semua input di modal edit
+      document.getElementById('edit-id').value = data.id;
+      document.getElementById('edit-name').value = data.name;
+      document.getElementById('edit-price').value = data.price;
+      document.getElementById('edit-description').value = data.description;
+      document.getElementById('edit-category').value = data.category;
+      document.getElementById('edit-thumbnail').value = data.thumbnail;
+      document.getElementById('edit-stock').value = data.stock;
+      document.getElementById('edit-size').value = data.size;
+
+      // Tampilkan modal
+      document.getElementById('editModal').classList.remove('hidden');
+    })
+    .catch(err => {
+      console.error('Error loading product:', err);
+      showToast('Error', 'Failed to load product data.', 'error');
+    });
+}
+
+// === SUBMIT EDIT FORM ===
+function submitEditForm() {
+  const id = document.getElementById('edit-id').value;
+  const formData = new FormData(document.getElementById('editForm'));
+
+  fetch(`/edit-product-ajax/${id}/`, {
+    method: 'POST',
+    body: formData,
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      showToast('Success', 'Product updated successfully!', 'success');
+      document.getElementById('editModal').classList.add('hidden');
+
+      // 🚫 HAPUS bagian oldCard.outerHTML
+      // ✅ CUKUP REFRESH SEKALI AJA
+      triggerProductEvent("productEdited");
+    } else {
+      console.error('Validation errors:', data.errors);
+      showToast('Error', 'Failed to update product. Please check your input.', 'error');
+    }
+  })
+  .catch(err => {
+    console.error('Unexpected error:', err);
+    showToast('Error', 'Unexpected error occurred while updating.', 'error');
   });
-});
-
-// Initialize page
-function initializeProductPage() {
-  showAllButton.addEventListener('click', handleShowAllProductsClick);
-  showMyButton.addEventListener('click', handleShowMyProductsClick);
-  
-  fetchProductsFromServer();
 }
 
-// Start application
-initializeProductPage();
+// Event Listeners
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("productForm");
+  if (form) {
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+      addProductEntry();
+    });
+  }
 
-// Add event listener to detect new product
-document.addEventListener('productAdded', function() {
-  // Refresh data without page reload
+  showAllButton.addEventListener('click', () => { activeFilter = 'all'; filterAndDisplay(); });
+  showMyButton.addEventListener('click', () => { activeFilter = 'my'; filterAndDisplay(); });
+  refreshButton.addEventListener('click', fetchProductsFromServer);
+
+  document.addEventListener("productAdded", fetchProductsFromServer);
+  document.addEventListener("productEdited", fetchProductsFromServer);
+  document.addEventListener("productDeleted", fetchProductsFromServer);
+
   fetchProductsFromServer();
 });
 
+function deleteProduct(id) {
+  if (!confirm("Are you sure you want to delete this product?")) return;
+
+  fetch(`/delete-product-ajax/${id}/`, { 
+    method: "POST"
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      showToast("Success", "Product deleted!", "success");
+      triggerProductEvent("productDeleted"); // biar product list ke-refresh
+    } else {
+      showToast("Error", "Failed to delete", "error");
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    showToast("Error", "Unexpected error occurred while deleting.", "error");
+  });
+}
 
 </script>
+
 {% endblock content %}
