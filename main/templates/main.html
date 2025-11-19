@@ -325,7 +325,7 @@ function submitEditForm() {
       showToast('Success', 'Product updated successfully!', 'success');
       document.getElementById('editModal').classList.add('hidden');
 
-      // 🚫 HAPUS bagian oldCard.outerHTML
+      
       // ✅ CUKUP REFRESH SEKALI AJA
       triggerProductEvent("productEdited");
     } else {

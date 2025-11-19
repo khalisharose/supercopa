@@ -1,5 +1,4 @@
 import datetime
-import json
 from django.http import (
     HttpResponse,
     HttpResponseRedirect,
@@ -7,7 +6,7 @@ from django.http import (
     HttpResponseNotAllowed
 )
 from django.urls import reverse
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.core import serializers
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib import messages
@@ -18,6 +17,10 @@ from django.utils.html import strip_tags
 from django.views.decorators.http import require_POST
 from main.forms import ProductForm
 from main.models import Product
+import requests
+from django.utils.html import strip_tags
+import json
+from django.http import JsonResponse
 
 
 # ======================== SHOW MAIN ========================
@@ -40,19 +43,12 @@ def show_main(request):
     return render(request, "main.html", context)
 
 
-# ======================== CREATE PRODUCT ========================
+# ======================== CREATE PRODUCT (Render Only) ========================
 @login_required(login_url='/login')
 def create_Product(request):
-    form = ProductForm(request.POST or None)
-
-    if request.method == 'POST' and form.is_valid():
-        product_entry = form.save(commit=False)
-        product_entry.user = request.user
-        product_entry.save()
-        return redirect('main:show_main')
-
-    context = {'form': form}
-    return render(request, "create_product.html", context)
+    """Render halaman create product (form kosong)."""
+    form = ProductForm()
+    return render(request, "create_product.html", {"form": form})
 
 
 # ======================== PRODUCT DETAIL ========================
@@ -77,7 +73,7 @@ def show_json(request):
         data.append({
             'id': str(product.id),
             'name': product.name,
-            'price': str(product.price),
+            'price': product.price,                   
             'description': product.description,
             'thumbnail': product.thumbnail,
             'category': product.category,
@@ -86,9 +82,11 @@ def show_json(request):
             'is_featured': product.is_featured,
             'is_signed': product.is_signed,
             'is_official_merch': product.is_official_merch,
-            'user_id': product.user_id,
+            'user': product.user_id,                  
+            'is_low_stock': product.is_low_stock,    
         })
     return JsonResponse(data, safe=False)
+
 
 
 def show_xml_by_id(request, product_id):
@@ -156,21 +154,16 @@ def logout_user(request):
     return response
 
 
-# ======================== EDIT PRODUCT ========================
+# ======================== EDIT PRODUCT (Render Only) ========================
 @login_required(login_url='/login')
 def edit_product(request, id):
+    """Render halaman edit product (tidak handle POST)."""
     product = get_object_or_404(Product, pk=id, user=request.user)
-    form = ProductForm(request.POST or None, instance=product)
-
-    if request.method == 'POST' and form.is_valid():
-        form.save()
-        messages.success(request, "Product updated successfully!")
-        return redirect('main:show_main')
-
+    form = ProductForm(instance=product)
     return render(request, "edit_product.html", {'form': form, 'product': product})
 
 
-# ======================== DELETE PRODUCT ========================
+# ======================== DELETE PRODUCT (Non-AJAX) ========================
 @login_required(login_url='/login')
 def delete_product(request, id):
     product = get_object_or_404(Product, pk=id, user=request.user)
@@ -211,6 +204,8 @@ def add_product_entry_ajax(request):
         )
 
         return JsonResponse({
+            "success": True,
+            "message": "Product created successfully!",
             "id": str(new_product.id),
             "name": new_product.name,
             "price": new_product.price,
@@ -225,60 +220,119 @@ def add_product_entry_ajax(request):
             "user_id": new_product.user.id if new_product.user else None,
         }, status=201)
     except Exception as e:
-        return JsonResponse({"error": str(e)}, status=400)
+        return JsonResponse({"success": False, "error": str(e)}, status=400)
 
 
 # ======================== EDIT PRODUCT AJAX ========================
 @login_required(login_url='/login')
 @csrf_exempt
 def edit_product_ajax(request, id):
-    if request.method != "POST":
-        return JsonResponse({'success': False, 'error': 'Method not allowed'}, status=405)
-
     try:
         product = get_object_or_404(Product, pk=id, user=request.user)
 
-        product.name = request.POST.get('name', product.name)
-        product.price = request.POST.get('price', product.price)
-        product.description = request.POST.get('description', product.description)
-        product.category = request.POST.get('category', product.category)
-        product.thumbnail = request.POST.get('thumbnail', product.thumbnail)
-        product.stock = request.POST.get('stock', product.stock)
-        product.size = request.POST.get('size', product.size)
-        product.is_featured = request.POST.get('is_featured') == 'on'
-        product.is_signed = request.POST.get('is_signed') == 'on'
-        product.is_official_merch = request.POST.get('is_official_merch') == 'on'
+        product.name = request.PUT.get('name', product.name)
+        product.price = request.PUT.get('price', product.price)
+        product.description = request.PUT.get('description', product.description)
+        product.category = request.PUT.get('category', product.category)
+        product.thumbnail = request.PUT.get('thumbnail', product.thumbnail)
+        product.stock = request.PUT.get('stock', product.stock)
+        product.size = request.PUT.get('size', product.size)
+        product.is_featured = request.PUT.get('is_featured') == 'on'
+        product.is_signed = request.PUT.get('is_signed') == 'on'
+        product.is_official_merch = request.PUT.get('is_official_merch') == 'on'
         product.save()
 
         return JsonResponse({
-            'success': True,
-            'message': 'Product updated successfully',
-            'product': {
-                'id': str(product.id),
-                'name': product.name,
-                'price': product.price,
-                'description': product.description,
-                'category': product.category,
-                'thumbnail': product.thumbnail,
-                'stock': product.stock,
-                'size': product.size,
-                'user_id': str(product.user.id),
-            }
+            "success": True,
+            "message": "Product updated successfully!",
+            "id": str(product.id),
+            "name": product.name,
+            "price": product.price,
+            "description": product.description,
+            "category": product.category,
+            "thumbnail": product.thumbnail,
+            "stock": product.stock,
+            "size": product.size,
+            "is_featured": product.is_featured,
+            "is_signed": product.is_signed,
+            "is_official_merch": product.is_official_merch,
         })
     except Exception as e:
-        return JsonResponse({'success': False, 'error': str(e)}, status=400)
+        return JsonResponse({"success": False, "error": str(e)}, status=400)
 
 
 # ======================== DELETE PRODUCT AJAX ========================
 @login_required(login_url='/login')
 @csrf_exempt
+@require_POST
 def delete_product_ajax(request, id):
-    if request.method != "POST":
-        return HttpResponseNotAllowed(["POST"])
-
     try:
         product = get_object_or_404(Product, id=id, user=request.user)
         product.delete()
-        return JsonResponse({"success": True, "message": "Product deleted successfully"})
+        return JsonResponse({
+            "success": True,
+            "message": "Product deleted successfully!"
+        })
     except Product.DoesNotExist:
-        return JsonResponse({"success": False, "message": "Product not found"}, status=404)
+        return JsonResponse({
+            "success": False,
+            "message": "Product not found"
+        }, status=404)
+        
+def proxy_image(request):
+    image_url = request.GET.get('url')
+    if not image_url:
+        return HttpResponse('No URL provided', status=400)
+    
+    try:
+        # Fetch image from external source
+        response = requests.get(image_url, timeout=10)
+        response.raise_for_status()
+        
+        # Return the image with proper content type
+        return HttpResponse(
+            response.content,
+            content_type=response.headers.get('Content-Type', 'image/jpeg')
+        )
+    except requests.RequestException as e:
+        return HttpResponse(f'Error fetching image: {str(e)}', status=500)
+
+@csrf_exempt
+def create_product_flutter(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+
+        # Ambil field dari Flutter
+        name = strip_tags(data.get("name", ""))
+        price = data.get("price", 0)
+        description = strip_tags(data.get("description", ""))
+        thumbnail = data.get("thumbnail", "")
+        category = data.get("category", "jersey")
+        is_featured = data.get("is_featured", False)
+        stock = data.get("stock", 0)
+        is_official_merch = data.get("is_official_merch", False)
+        size = data.get("size", "M")
+        is_signed = data.get("is_signed", False)
+
+        user = request.user if request.user.is_authenticated else None
+
+        # Buat instance product baru
+        new_product = Product(
+            name=name,
+            price=price,
+            description=description,
+            thumbnail=thumbnail,
+            category=category,
+            is_featured=is_featured,
+            stock=stock,
+            is_official_merch=is_official_merch,
+            size=size,
+            is_signed=is_signed,
+            user=user,
+        )
+
+        new_product.save()
+
+        return JsonResponse({"status": "success"}, status=200)
+
+    return JsonResponse({"status": "error"}, status=401)
